@@ -610,7 +610,7 @@ export const DEFAULT_MAX_XP_GIFT = 100
  * by however many players are on, and the drop is meant for a small thank-you to the whole
  * server, not a payout.
  */
-export const MAX_TOKEN_DROP = 1_000
+export const MAX_TOKEN_DROP = 1_000_000
 
 /**
  * The most the Discord ROLE drop can carry per player. Higher than {@link MAX_TOKEN_DROP}:

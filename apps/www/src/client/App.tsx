@@ -5294,7 +5294,7 @@ function SandboxForm() {
  * the one that decides. Not imported: the staff module pulls hono and the JWT code into the
  * page bundle for one number.
  */
-const MAX_TOKEN_DROP = 1_000
+const MAX_TOKEN_DROP = 1_000_000
 
 /** The role drop's own, higher cap — a mirror of www's `MAX_ROLE_TOKEN_DROP`. */
 const MAX_ROLE_TOKEN_DROP = 10_000
