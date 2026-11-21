@@ -890,6 +890,14 @@ const app = new Hono<App>()
 		return spec
 	})
 
+	// ---- Home page ----------------------------------------------------------
+	// `/` is the VR Playground front door (public/playground.html). Everything else,
+	// including /login, /signup and /account, is still the React app below.
+	.get('/', (c) => {
+		if (!c.env.ASSETS) return c.notFound()
+		return c.env.ASSETS.fetch(new Request(new URL('/playground', c.req.url), c.req.raw))
+	})
+
 	// ---- Static SPA ---------------------------------------------------------
 	// Everything else is served from the built client assets. With
 	// `not_found_handling: single-page-application`, unknown routes return

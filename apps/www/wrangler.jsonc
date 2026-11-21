@@ -43,7 +43,7 @@
 	"assets": {
 		"binding": "ASSETS",
 		"not_found_handling": "single-page-application",
-		"run_worker_first": ["/api/*", "/docs", "/docs/openapi/*", "/privacy", "/server-status"]
+		"run_worker_first": ["/", "/api/*", "/docs", "/docs/openapi/*", "/privacy", "/server-status"]
 	},
 	// The Turnstile keypair guarding web signup, out of the same account-level Secrets
 	// Store every other worker binds for JWT_SECRET — values live there, never in this

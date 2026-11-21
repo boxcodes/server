@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VR Playground</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🥤%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Nunito:wght@400;600;700&display=swap">
+<style>
+:root{
+  --brew:#2a1409; --brew-2:#3d2113; --foam:#f7e9cc; --amber:#e8923a; --avocado:#86b04f; --ink:#f7e9cc; --muted:#cdb592;
+  --page:#2a1409; --card:#3d2113; --line:#5a3722; --code:#1c0d06;
+  --disp:'Fredoka','Trebuchet MS',system-ui,sans-serif; --body:'Nunito',system-ui,-apple-system,'Segoe UI',sans-serif;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:light){
+  :root:not([data-theme="dark"]){--page:#fbf3e1;--card:#fff9ec;--line:#e3cfa6;--ink:#2a1409;--muted:#6b4a30;--code:#2a1409;color-scheme:light}
+}
+:root[data-theme="light"]{--page:#fbf3e1;--card:#fff9ec;--line:#e3cfa6;--ink:#2a1409;--muted:#6b4a30;--code:#2a1409;color-scheme:light}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--page);color:var(--ink);font:400 1.05rem/1.65 var(--body);padding-bottom:env(safe-area-inset-bottom,0px)}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--amber);outline-offset:3px;border-radius:6px}
+.wrap{max-width:62rem;margin:0 auto;padding:0 1.25rem}
+
+/* hero: always dark root beer, foam on top of the page below */
+.hero{position:relative;background:var(--brew);color:#f7e9cc;padding:calc(3rem + env(safe-area-inset-top,0px)) 0 7rem;overflow:hidden}
+.hero h1{font:700 clamp(3rem,11vw,7.5rem)/.95 var(--disp);margin:0 0 1.25rem;letter-spacing:-.01em}
+.hero p.lead{font-size:clamp(1.1rem,2.4vw,1.4rem);max-width:34rem;margin:0 0 2rem;color:#e6d3ad}
+.btns{display:flex;flex-wrap:wrap;gap:.8rem}
+.btn{display:inline-block;font:700 1.05rem var(--disp);padding:.85rem 1.6rem;border-radius:999px;text-decoration:none;border:2px solid #f7e9cc}
+.btn.main{background:var(--amber);border-color:var(--amber);color:#2a1409}
+.btn.main:hover{background:#f2a255}
+.btn.alt{color:#f7e9cc}.btn.alt:hover{background:rgba(247,233,204,.12)}
+.foam{position:absolute;left:0;right:0;bottom:-1px;width:100%;height:5.5rem;display:block}
+.foam path{fill:var(--page)}
+.bubbles span{position:absolute;bottom:-20px;border-radius:50%;background:rgba(247,233,204,.16);animation:rise 9s ease-in 1 forwards}
+@keyframes rise{to{transform:translateY(-34rem);opacity:0}}
+@media (prefers-reduced-motion:reduce){.bubbles{display:none}html{scroll-behavior:auto}}
+
+section{padding:3.5rem 0}
+h2{font:700 clamp(1.8rem,4vw,2.5rem)/1.1 var(--disp);margin:0 0 1rem}
+.sub{color:var(--muted);max-width:40rem;margin:0 0 2rem}
+.grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:1.3rem 1.4rem}
+.card h3{font:700 1.3rem var(--disp);margin:0 0 .4rem}
+.card p{margin:0;color:var(--muted)}
+.card.big{border-radius:26px 8px 26px 8px}
+
+.steps{list-style:none;margin:0;padding:0;counter-reset:s;display:grid;gap:1rem}
+.steps li{counter-increment:s;display:grid;grid-template-columns:3rem 1fr;gap:1rem;align-items:start}
+.steps li::before{content:counter(s);font:700 1.5rem var(--disp);width:3rem;height:3rem;border-radius:50%;background:var(--avocado);color:#1c2a0c;display:grid;place-items:center}
+.steps h3{font:700 1.2rem var(--disp);margin:.2rem 0 .2rem}
+.steps p{margin:0;color:var(--muted)}
+.code{position:relative;background:var(--code);color:#f7e9cc;border-radius:12px;padding:1rem 1.1rem;margin:.7rem 0 0;font:600 .95rem/1.6 ui-monospace,Menlo,Consolas,monospace;overflow-x:auto}
+.code button{position:absolute;top:.5rem;right:.5rem;font:700 .8rem var(--body);background:#f7e9cc;color:#2a1409;border:0;border-radius:8px;padding:.3rem .7rem;cursor:pointer}
+.code pre{margin:0;padding-right:4.5rem;white-space:pre}
+
+.status{display:grid;gap:.6rem;list-style:none;padding:0;margin:0}
+.status li{display:flex;gap:.7rem;align-items:flex-start}
+.dot{flex:none;width:.9rem;height:.9rem;border-radius:50%;margin-top:.5rem}
+.ok{background:var(--avocado)}.wip{background:var(--amber)}
+footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--muted);font-size:.95rem}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="bubbles" aria-hidden="true">
+    <span style="left:8%;width:14px;height:14px;animation-delay:.2s"></span>
+    <span style="left:22%;width:24px;height:24px;animation-delay:1.4s"></span>
+    <span style="left:47%;width:12px;height:12px;animation-delay:.8s"></span>
+    <span style="left:63%;width:30px;height:30px;animation-delay:2.2s"></span>
+    <span style="left:81%;width:18px;height:18px;animation-delay:1s"></span>
+    <span style="left:92%;width:10px;height:10px;animation-delay:2.8s"></span>
+  </div>
+  <div class="wrap">
+    <h1>VR Playground</h1>
+    <p class="lead">A community-run Rec Room revival for Quest. Build rooms with the Maker Pen, dress your avatar, and hang out in a world that’s ours.</p>
+    <div class="btns">
+      <a class="btn main" href="/signup">Create an account</a>
+      <a class="btn alt" href="/login">Sign in</a>
+      <a class="btn alt" href="#join">How to join</a>
+    </div>
+  </div>
+  <svg class="foam" viewBox="0 0 1200 90" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0 90V48c40-30 80-30 120 0s80 30 120 0 80-34 120-4 80 34 120 4 80-30 120 0 80 30 120-2 80-32 120-2 80 30 120 2 80-30 120 0 60 22 60 22v22z"/>
+  </svg>
+</header>
+
+<main>
+  <section id="what">
+    <div class="wrap">
+      <h2>What you can do here</h2>
+      <p class="sub">VR Playground runs on its own private server, so everything below belongs to the community that plays on it.</p>
+      <div class="grid">
+        <div class="card big"><h3>Make rooms</h3><p>The Maker Pen works in rooms you create. Build whatever you can imagine, then invite people in.</p></div>
+        <div class="card"><h3>Shop and dress up</h3><p>The store is stocked with avatar items, so you can buy, equip and show off your look.</p></div>
+        <div class="card big"><h3>Make it yours</h3><p>Upload a profile picture, snap photos, and keep your own inventory and tokens.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="join">
+    <div class="wrap">
+      <h2>How to join</h2>
+      <p class="sub">You need a Quest headset and an account. It takes about five minutes.</p>
+      <ol class="steps">
+        <li><div><h3>Create your account</h3><p>Pick a password on the <a href="/signup">sign-up page</a>. The server gives you a username, which you’ll see on your account page. You sign in with that username and your password, here and in the game.</p></div></li>
+        <li><div><h3>Install the game on your Quest</h3><p>You need a RecFlare-compatible build of the game. Ask whoever invited you which one to use.</p></div></li>
+        <li><div><h3>Point the game at VR Playground</h3><p>Create a file named <b>recflare.cfg</b> in the game’s folder on the headset, at <b>Android/data/net.recflare.RecFlare/files/</b>, with this inside:</p>
+          <div class="code"><button type="button" id="copy">Copy</button><pre id="cfg">RecNet NameServer Host = ns.vrplayground.dpdns.org</pre></div></div></li>
+        <li><div><h3>Sign in and play</h3><p>Open the game and sign in with your username and password.</p></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="status">
+    <div class="wrap">
+      <h2>What’s working right now</h2>
+      <p class="sub">VR Playground is still being built. Here’s the honest status.</p>
+      <ul class="status">
+        <li><span class="dot ok"></span><span>Sign-up, sign-in, and your profile</span></li>
+        <li><span class="dot ok"></span><span>The store, your inventory, and tokens</span></li>
+        <li><span class="dot ok"></span><span>Rooms and the Maker Pen in rooms you make</span></li>
+        <li><span class="dot wip"></span><span>Seeing and meeting other players in the same room (being fixed)</span></li>
+        <li><span class="dot wip"></span><span>Voice chat (not set up yet)</span></li>
+        <li><span class="dot wip"></span><span>Some clothing items show up blank on your avatar</span></li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">VR Playground is a fan-made community project. It isn’t affiliated with Rec Room Inc. Built on the open-source <a href="https://github.com/recflare/server">RecFlare</a> server.</div>
+</footer>
+
+<script>
+document.getElementById('copy').addEventListener('click',function(){
+  var b=this,t=document.getElementById('cfg').textContent;
+  var done=function(){b.textContent='Copied';setTimeout(function(){b.textContent='Copy'},1500)};
+  try{navigator.clipboard.writeText(t).then(done,function(){})}catch(e){}
+});
+</script>
+</body>
+</html>
