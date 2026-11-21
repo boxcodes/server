@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Search · VR Playground</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🥤%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Nunito:wght@400;600;700&display=swap">
+<style>
+:root{--page:#2a1409;--card:#3d2113;--card-hi:#4a2a18;--line:#5a3722;--ink:#f7e9cc;--muted:#cdb592;--amber:#e8923a;--avocado:#86b04f;
+  --disp:'Fredoka','Trebuchet MS',system-ui,sans-serif;--body:'Nunito',system-ui,-apple-system,'Segoe UI',sans-serif;color-scheme:dark}
+@media (prefers-color-scheme:light){:root{--page:#fbf3e1;--card:#fff9ec;--card-hi:#fff3d9;--line:#e3cfa6;--ink:#2a1409;--muted:#6b4a30;--amber:#a85a14;color-scheme:light}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font:400 1.05rem/1.6 var(--body);padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:3px solid var(--amber);outline-offset:3px;border-radius:8px}
+.wrap{max-width:62rem;margin:0 auto;padding:0 1.25rem}
+nav{display:flex;gap:1rem;align-items:center;justify-content:space-between;padding:1rem 0}
+nav .brand{font:700 1.4rem var(--disp)}
+nav .links{display:flex;gap:1.2rem;font-weight:700}
+nav .links a:hover{color:var(--amber)}
+h1{font:700 clamp(2rem,6vw,3.2rem)/1.05 var(--disp);margin:1.5rem 0 1rem}
+.box{display:flex;gap:.6rem;margin-bottom:2rem}
+.box input{flex:1;min-width:0;font:600 1.1rem var(--body);padding:.9rem 1.1rem;border-radius:999px;border:2px solid var(--line);background:var(--card);color:var(--ink)}
+.box input::placeholder{color:var(--muted)}
+.box input:focus{border-color:var(--amber);outline:none}
+.box button{font:700 1.05rem var(--disp);padding:0 1.5rem;border-radius:999px;border:0;background:var(--amber);color:#2a1409;cursor:pointer}
+h2{font:700 1.5rem var(--disp);margin:2rem 0 1rem;display:flex;align-items:baseline;gap:.6rem}
+h2 small{font:600 .95rem var(--body);color:var(--muted)}
+.grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fill,minmax(12.5rem,1fr))}
+.card{display:block;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.card:hover{background:var(--card-hi);border-color:var(--amber)}
+.pic{aspect-ratio:1/1;background:var(--card-hi);display:grid;place-items:center;font:700 3rem var(--disp);color:var(--muted);overflow:hidden}
+.room .pic{aspect-ratio:16/10}
+.pic img{width:100%;height:100%;object-fit:cover;display:block}
+.info{padding:.8rem 1rem 1rem}
+.info b{display:block;font:700 1.1rem/1.25 var(--disp);overflow-wrap:anywhere}
+.info span{color:var(--muted);font-size:.92rem}
+.msg{color:var(--muted);padding:.5rem 0}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <a class="brand" href="/">VR Playground</a>
+    <div class="links"><a href="/login">Sign in</a><a href="/account">Account</a></div>
+  </nav>
+  <h1>Search</h1>
+  <div class="box" role="search">
+    <label class="sr" for="q">Search players and rooms</label>
+    <input id="q" type="search" placeholder="Search players and rooms" autocomplete="off" autofocus>
+    <button type="button" id="go">Search</button>
+  </div>
+  <div id="status" class="msg" aria-live="polite">Type a name to find players and rooms.</div>
+  <section id="people" hidden><h2>Players <small id="pc"></small></h2><div class="grid" id="pg"></div></section>
+  <section id="rooms" hidden><h2>Rooms <small id="rc"></small></h2><div class="grid" id="rg"></div></section>
+</div>
+<script>
+(function(){
+  var q=document.getElementById('q'),st=document.getElementById('status'),hosts=null,timer=null,seq=0;
+  var $=function(id){return document.getElementById(id)};
+
+  function getHosts(){
+    if(hosts) return Promise.resolve(hosts);
+    return fetch('/api/config').then(function(r){return r.json()}).then(function(c){hosts=c.hosts;return hosts});
+  }
+  function getJson(url){
+    return fetch(url).then(function(r){if(!r.ok) throw new Error(r.status);return r.json()});
+  }
+  function img(host,path){return path?host+'/'+String(path).replace(/^\/+/,''):''}
+  function pic(src,fallback){
+    var d=document.createElement('div');d.className='pic';
+    function letter(){d.textContent=(fallback||'?').charAt(0).toUpperCase()}
+    if(!src){letter();return d}
+    var i=document.createElement('img');i.alt='';i.loading='lazy';i.src=src;i.onerror=function(){i.remove();letter()};
+    d.appendChild(i);return d;
+  }
+  function card(href,cls,picEl,title,sub){
+    var a=document.createElement('a');a.href=href;a.className='card '+cls;a.appendChild(picEl);
+    var i=document.createElement('div');i.className='info';
+    var b=document.createElement('b');b.textContent=title;i.appendChild(b);
+    if(sub){var s=document.createElement('span');s.textContent=sub;i.appendChild(s)}
+    a.appendChild(i);return a;
+  }
+  function fill(sec,grid,count,items){
+    grid.textContent='';
+    sec.hidden=items.length===0;
+    count.textContent=items.length?'('+items.length+')':'';
+    items.forEach(function(el){grid.appendChild(el)});
+  }
+
+  function run(){
+    var term=q.value.trim(),me=++seq;
+    history.replaceState(null,'',term?'?q='+encodeURIComponent(term):location.pathname);
+    if(!term){fill($('people'),$('pg'),$('pc'),[]);fill($('rooms'),$('rg'),$('rc'),[]);st.textContent='Type a name to find players and rooms.';return}
+    st.textContent='Searching…';
+    getHosts().then(function(h){
+      var enc=encodeURIComponent(term);
+      var people=getJson(h.accounts+'/account/search?name='+enc+'&take=20').catch(function(){return null});
+      var rooms=getJson(h.rooms+'/rooms/search?query='+enc+'&take=20').then(function(j){return j.Results||[]}).catch(function(){return null});
+      return Promise.all([people,rooms]).then(function(res){
+        if(me!==seq) return;
+        var p=res[0]||[],r=res[1]||[];
+        fill($('people'),$('pg'),$('pc'),p.map(function(a){
+          return card('/user/'+encodeURIComponent(a.username),'person',pic(img(h.img,a.profileImage),a.username),a.displayName||a.username,'@'+a.username);
+        }));
+        fill($('rooms'),$('rg'),$('rc'),r.map(function(x){
+          return card('/rooms/'+x.RoomId,'room',pic(img(h.img,x.ImageName),x.Name),x.Name,'');
+        }));
+        if(res[0]===null&&res[1]===null) st.textContent='Search isn’t answering right now. Try again in a moment.';
+        else if(!p.length&&!r.length) st.textContent='No players or rooms match “'+term+'”. Try a shorter name.';
+        else st.textContent='';
+      });
+    }).catch(function(){if(me===seq) st.textContent='Search isn’t answering right now. Try again in a moment.'});
+  }
+  q.addEventListener('input',function(){clearTimeout(timer);timer=setTimeout(run,300)});
+  q.addEventListener('keydown',function(e){if(e.key==='Enter'){clearTimeout(timer);run()}});
+  $('go').addEventListener('click',run);
+  var init=new URLSearchParams(location.search).get('q');
+  if(init){q.value=init;run()}
+})();
+</script>
+</body>
+</html>

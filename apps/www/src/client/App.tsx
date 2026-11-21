@@ -1399,7 +1399,7 @@ function SiteSearch({ navigate }: { navigate: Navigate }) {
 				className={`site-search-toggle${open ? ' active' : ''}`}
 				aria-label="Search players and rooms"
 				aria-expanded={open}
-				onClick={() => setOpen((o) => !o)}
+				onClick={() => window.location.assign("/search")}
 			>
 				<SearchIcon />
 			</button>
@@ -2641,7 +2641,7 @@ function NavBar({
 	return (
 		<header className="nav">
 			<Link to="/" navigate={navigate} className="brand">
-				RecFlare
+				VR Playground
 			</Link>
 			<nav className="nav-links">
 				<a href={DISCORD_INVITE} target="_blank" rel="noreferrer">
@@ -3412,7 +3412,7 @@ function DiscordLoginPage({
 		return (
 			<main className="shell">
 				<section className="card">
-					<h2>Welcome to RecFlare</h2>
+					<h2>Welcome to VR Playground</h2>
 					<p>
 						Your account is ready, linked to your Discord. Your username is{' '}
 						<strong>@{created.username}</strong> — you can change it on your account page.
