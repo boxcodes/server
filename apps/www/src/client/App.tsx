@@ -4104,7 +4104,7 @@ function ExportRoom({ room, subRooms, cdnHost }: { room: OwnedRoom; subRooms: Su
                 if (!key) continue
                 const res = await fetch(`${cdnHost}/room/${key}`)
                 if (!res.ok) throw new Error(`the CDN answered ${res.status} for ${sub.Name || sub.SubRoomId}`)
-                saveBlob(await res.blob(), safeFilename(room.Name, sub.Name || `Subroom ${sub.SubRoomId}`, 'scene'))
+                saveBlob(await res.blob(), safeFilename(room.Name, sub.Name || `Subroom ${sub.SubRoomId}`, 'scene').replace(/\.bin$/, '.room'))
                 saved++
             }
             const info = {
