@@ -4056,6 +4056,7 @@ function RoomDetail({
 					The places inside the room players actually load into. Each keeps its own accessibility
 					and its own saves, so a public room can still hold a subroom nobody else can reach.
 				</p>
+                                <ExportRoom room={room} subRooms={subRooms} cdnHost={cdnHost} />
 				{subRooms.length === 0 ? (
 					<p className="muted">This room has no subrooms.</p>
 				) : (
@@ -4075,6 +4076,64 @@ function RoomDetail({
 			</section>
 		</>
 	)
+}
+
+/** Owner export: downloads each subroom's published scene (.bin) plus a small info file. */
+function ExportRoom({ room, subRooms, cdnHost }: { room: OwnedRoom; subRooms: SubRoom[]; cdnHost: string }) {
+    const [pending, setPending] = useState(false)
+    const [message, setMessage] = useState('')
+    const [error, setError] = useState('')
+
+    const saveBlob = (blob: Blob, filename: string) => {
+        const href = URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = href
+        link.download = filename
+        link.click()
+        setTimeout(() => URL.revokeObjectURL(href), 1000)
+    }
+
+    const run = async () => {
+        setPending(true)
+        setMessage('')
+        setError('')
+        try {
+            let saved = 0
+            for (const sub of subRooms) {
+                const key = sub.CurrentSave?.DataBlob || sub.DataBlob
+                if (!key) continue
+                const res = await fetch(`${cdnHost}/room/${key}`)
+                if (!res.ok) throw new Error(`the CDN answered ${res.status} for ${sub.Name || sub.SubRoomId}`)
+                saveBlob(await res.blob(), safeFilename(room.Name, sub.Name || `Subroom ${sub.SubRoomId}`, 'scene'))
+                saved++
+            }
+            const info = {
+                name: room.Name,
+                description: (room as { Description?: string }).Description ?? '',
+                tags: room.Tags?.map((t) => t.Tag) ?? [],
+                subrooms: subRooms.map((sub) => ({ id: sub.SubRoomId, name: sub.Name, maxPlayers: sub.MaxPlayers })),
+            }
+            saveBlob(
+                new Blob([JSON.stringify(info, null, 2)], { type: 'application/json' }),
+                `${room.Name.replace(/[^\w.-]+/g, '-')}-info.json`
+            )
+            setMessage(saved === 0 ? 'Nothing published to export yet.' : `Exported ${saved} scene file${saved === 1 ? '' : 's'} and the info file.`)
+        } catch (e) {
+            setError(e instanceof Error ? e.message : String(e))
+        } finally {
+            setPending(false)
+        }
+    }
+
+    return (
+        <div>
+            <button type="button" className="cta" disabled={pending} onClick={() => void run()}>
+                {pending ? 'Exporting…' : 'Export room'}
+            </button>
+            {message && <p className="ok">{message}</p>}
+            {error && <p className="error">{error}</p>}
+        </div>
+    )
 }
 
 /** One subroom: what it is, and — the part an owner can't see anywhere else — its save. */
