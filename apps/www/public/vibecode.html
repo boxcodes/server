@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>🥤✨ VR Playground ✨🥑</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🥤%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Nunito:wght@600;800&display=swap">
+<style>
+:root{--disp:'Fredoka','Trebuchet MS',system-ui,sans-serif;--body:'Nunito',system-ui,sans-serif;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;color:#fff;font:800 1.1rem/1.6 var(--body);overflow-x:hidden;cursor:crosshair;
+  background:linear-gradient(120deg,#ff3cac,#784ba0,#2b86c5,#00f5a0,#ffd200,#ff3cac);background-size:400% 400%;animation:bg 14s ease infinite;
+  padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+@keyframes bg{0%{background-position:0 50%}50%{background-position:100% 50%}100%{background-position:0 50%}}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:4px solid #fff;outline-offset:4px;border-radius:12px}
+.wrap{position:relative;z-index:2;max-width:60rem;margin:0 auto;padding:1rem 1.2rem 4rem;text-align:center}
+.top{display:flex;justify-content:space-between;gap:.6rem;flex-wrap:wrap;padding:.6rem 0;font:700 1rem var(--disp)}
+.top a{background:rgba(0,0,0,.28);padding:.4rem .9rem;border-radius:999px;backdrop-filter:blur(8px)}
+.top a:hover{background:rgba(0,0,0,.5)}
+.marquee{overflow:hidden;white-space:nowrap;background:rgba(0,0,0,.35);border-radius:999px;margin:.6rem 0;padding:.3rem 0;font:700 1rem var(--disp)}
+.marquee div{display:inline-block;padding-left:100%;animation:mq 22s linear infinite}
+@keyframes mq{to{transform:translateX(-100%)}}
+h1{font:700 clamp(2.8rem,12vw,7.5rem)/1 var(--disp);margin:2rem 0 .5rem;
+  background:linear-gradient(90deg,#fff,#ffe259,#ff9a9e,#a1ffce,#fff);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:shine 4s linear infinite;filter:drop-shadow(0 6px 0 rgba(0,0,0,.25))}
+@keyframes shine{to{background-position:300% 0}}
+.wob{display:inline-block;animation:wob 2.2s ease-in-out infinite}
+@keyframes wob{0%,100%{transform:rotate(-8deg) scale(1)}50%{transform:rotate(8deg) scale(1.25)}}
+.lead{font-size:clamp(1.1rem,3vw,1.6rem);max-width:36rem;margin:0 auto 1.6rem;text-shadow:0 2px 0 rgba(0,0,0,.3)}
+.btns{display:flex;flex-wrap:wrap;gap:.9rem;justify-content:center}
+.btn{font:700 1.25rem var(--disp);padding:1rem 1.8rem;border-radius:999px;border:3px solid #fff;color:#fff;background:rgba(0,0,0,.3);
+  backdrop-filter:blur(6px);transition:transform .15s,background .15s;cursor:pointer;display:inline-block}
+.btn.hot{background:#fff;color:#c2185b}
+.btn:hover{transform:scale(1.12) rotate(-3deg)}
+.btn:active{transform:scale(.94)}
+.grid{display:grid;gap:1.1rem;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));margin:3rem 0}
+.card{background:rgba(255,255,255,.16);border:2px solid rgba(255,255,255,.45);border-radius:28px;padding:1.4rem;backdrop-filter:blur(14px);
+  box-shadow:0 10px 30px rgba(0,0,0,.25);transition:transform .2s;transform-style:preserve-3d}
+.card:hover{transform:translateY(-8px) rotate(1.5deg)}
+.card h3{font:700 1.5rem var(--disp);margin:.2rem 0}
+.card p{margin:0;font-weight:600}
+.big{font-size:3rem;display:block;animation:bob 2s ease-in-out infinite}
+.card:nth-child(2) .big{animation-delay:.3s}.card:nth-child(3) .big{animation-delay:.6s}
+@keyframes bob{50%{transform:translateY(-10px) scale(1.12)}}
+h2{font:700 clamp(1.8rem,5vw,3rem)/1.1 var(--disp);margin:2.5rem 0 1rem;text-shadow:0 3px 0 rgba(0,0,0,.25)}
+.code{position:relative;background:rgba(0,0,0,.55);border-radius:20px;padding:1.1rem 1.2rem;font:700 1rem ui-monospace,Menlo,Consolas,monospace;overflow-x:auto;text-align:left;max-width:40rem;margin:0 auto}
+.code button{margin-top:.7rem;display:block}
+.status{list-style:none;padding:0;margin:0 auto;max-width:34rem;text-align:left;display:grid;gap:.6rem}
+.status li{background:rgba(0,0,0,.3);border-radius:18px;padding:.6rem 1rem}
+.meter{background:rgba(0,0,0,.35);border-radius:999px;height:1.6rem;max-width:30rem;margin:.8rem auto;overflow:hidden;border:2px solid #fff}
+.meter i{display:block;height:100%;width:0;background:repeating-linear-gradient(45deg,#00f5a0,#00f5a0 12px,#9bffd6 12px,#9bffd6 24px);transition:width 1.6s cubic-bezier(.2,1.4,.4,1);font:700 .9rem/1.6rem var(--disp);text-align:right;padding-right:.6rem;color:#064}
+footer{font-weight:700;opacity:.9;margin-top:3rem}
+.fl{position:fixed;z-index:1;pointer-events:none;font-size:2rem;opacity:.75;animation:fl linear infinite}
+@keyframes fl{0%{transform:translateY(110vh) rotate(0)}100%{transform:translateY(-20vh) rotate(360deg)}}
+.p{position:fixed;z-index:9;pointer-events:none;font-size:1.5rem;user-select:none}
+@media (prefers-reduced-motion:reduce){body,h1,.wob,.big,.marquee div,.fl{animation:none}.fl{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a href="/">🏠 Real Home</a><a href="/search">🔎 Search</a><a href="/login">🔑 Sign in</a><a href="/signup">🚀 Join</a></div>
+  <div class="marquee" aria-hidden="true"><div>🥤 ROOT BEER POWERED 🥤 🥑 AVOCADO CERTIFIED 🥑 🎮 100% VIBES 🎮 ✨ NOW WITH SPARKLES ✨ 🔥 NO CAP 🔥 🚗 AVOCADO CAR COMING SOON 🚗</div></div>
+
+  <h1>🥤 VR Playground <span class="wob">✨</span></h1>
+  <p class="lead">🎮 The community-run Rec Room revival for Quest! 🛠️ Build rooms, 👗 dress up, and 🌍 hang out in a world that’s ours! 💯🔥</p>
+  <div class="btns">
+    <a class="btn hot" href="/signup">🚀 Create account ✨</a>
+    <a class="btn" href="/login">🔑 Sign in 😎</a>
+    <button class="btn" id="boom" type="button">🎉 Press me 🎉</button>
+  </div>
+
+  <div class="grid">
+    <div class="card"><span class="big">🛠️</span><h3>🏗️ Make rooms 🏗️</h3><p>🖊️ The Maker Pen works in rooms you create! Build anything 🤯🚀</p></div>
+    <div class="card"><span class="big">👗</span><h3>🛍️ Shop &amp; dress up 🛍️</h3><p>💰 Buy, equip, and flex your fit! 😎✨</p></div>
+    <div class="card"><span class="big">🖼️</span><h3>📸 Make it yours 📸</h3><p>🌟 Profile pics, photos, tokens, the works! 💎🥑</p></div>
+  </div>
+
+  <h2>🚀 How to join in 4 easy steps 🚀</h2>
+  <ul class="status">
+    <li>1️⃣ 👤 Create your account on the <a href="/signup"><u>sign-up page</u></a> ✨</li>
+    <li>2️⃣ 🥽 Install a RecFlare-compatible game on your Quest 📦</li>
+    <li>3️⃣ 📝 Make <b>recflare.cfg</b> in <b>Android/data/net.recflare.RecFlare/files/</b> 📁 with the line below ⬇️</li>
+    <li>4️⃣ 🎮 Sign in and play!! 🥳🎊</li>
+  </ul>
+  <div class="code" style="margin-top:1rem"><span id="cfg">RecNet NameServer Host = ns.vrplayground.dpdns.org</span><button class="btn" id="copy" type="button">📋 Copy it 📋</button></div>
+
+  <h2>📊 Vibe status 📊</h2>
+  <div class="meter" aria-label="Progress"><i id="bar">0%</i></div>
+  <ul class="status">
+    <li>✅ 🔐 Sign-up, sign-in &amp; profiles</li>
+    <li>✅ 🛒 Store, inventory &amp; tokens</li>
+    <li>✅ 🛠️ Rooms &amp; the Maker Pen in your own rooms</li>
+    <li>🚧 👀 Seeing other players in the same room (being fixed!)</li>
+    <li>🚧 🎤 Voice chat (not set up yet)</li>
+    <li>🚧 👕 Some clothing shows up blank</li>
+  </ul>
+
+  <footer>🥤 Fan-made community project 💛 Not affiliated with Rec Room Inc. 🙏 Built on open-source <a href="https://github.com/recflare/server"><u>RecFlare</u></a> 🔓✨</footer>
+</div>
+
+<script>
+(function(){
+  var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var E=['✨','🥤','🥑','🔥','💖','⭐','🎉','💎','🚀','🌈','🍔','😎','🎮'];
+  var pick=function(a){return a[Math.floor(Math.random()*a.length)]};
+
+  // floating background emojis
+  if(!reduce){for(var i=0;i<16;i++){var f=document.createElement('div');f.className='fl';f.textContent=pick(E);
+    f.style.left=Math.random()*100+'vw';f.style.animationDuration=(9+Math.random()*14)+'s';f.style.animationDelay=(-Math.random()*20)+'s';
+    f.style.fontSize=(1.2+Math.random()*2.2)+'rem';f.setAttribute('aria-hidden','true');document.body.appendChild(f)}}
+
+  function spawn(x,y,dx,dy,life,size){
+    var p=document.createElement('span');p.className='p';p.textContent=pick(E);p.setAttribute('aria-hidden','true');
+    p.style.left=x+'px';p.style.top=y+'px';p.style.fontSize=size+'rem';document.body.appendChild(p);
+    var a=p.animate([{transform:'translate(-50%,-50%) scale(1) rotate(0)',opacity:1},
+      {transform:'translate(calc(-50% + '+dx+'px),calc(-50% + '+dy+'px)) scale(.2) rotate('+(Math.random()*540-270)+'deg)',opacity:0}],
+      {duration:life,easing:'cubic-bezier(.2,.8,.4,1)'});
+    a.onfinish=function(){p.remove()};
+  }
+  function burst(x,y,n){if(reduce)return;for(var i=0;i<n;i++){var ang=Math.random()*6.283,d=60+Math.random()*140;
+    spawn(x,y,Math.cos(ang)*d,Math.sin(ang)*d,700+Math.random()*500,1+Math.random()*1.4)}}
+
+  // mouse trail
+  var last=0;
+  addEventListener('pointermove',function(e){if(reduce)return;var t=Date.now();if(t-last<45)return;last=t;
+    spawn(e.clientX,e.clientY,(Math.random()-.5)*60,30+Math.random()*50,800,1+Math.random())});
+  // click bursts
+  addEventListener('pointerdown',function(e){burst(e.clientX,e.clientY,14)});
+  document.getElementById('boom').addEventListener('click',function(){
+    if(reduce)return;for(var i=0;i<60;i++)setTimeout(function(){burst(Math.random()*innerWidth,Math.random()*innerHeight*.8,6)},i*25)});
+
+  // copy button
+  document.getElementById('copy').addEventListener('click',function(){
+    var b=this,t=document.getElementById('cfg').textContent;
+    try{navigator.clipboard.writeText(t).then(function(){b.textContent='✅ Copied!! 🎉';setTimeout(function(){b.textContent='📋 Copy it 📋'},1600)})}catch(e){}
+  });
+
+  // progress bar: 3 of 6 working
+  setTimeout(function(){var bar=document.getElementById('bar');bar.style.width='50%';bar.textContent='50% 🚀'},400);
+})();
+</script>
+</body>
+</html>
