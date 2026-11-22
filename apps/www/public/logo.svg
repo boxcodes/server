@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="VR Playground">
+  <rect width="128" height="128" rx="28" fill="#000"/>
+  <ellipse cx="64" cy="64" rx="50" ry="31" fill="#fff"/>
+  <ellipse cx="38" cy="64" rx="6.5" ry="17" fill="#000"/>
+  <ellipse cx="64" cy="64" rx="6.5" ry="17" fill="#000"/>
+  <ellipse cx="90" cy="64" rx="6.5" ry="17" fill="#000"/>
+</svg>

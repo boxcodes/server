@@ -117,10 +117,10 @@ body {
 
 .brand::before {
 	content: '';
-	width: 9px;
-	height: 9px;
-	border-radius: 2px;
-	background: var(--accent);
+	width: 30px;
+	height: 30px;
+	border-radius: 8px;
+	background: url('/logo.svg') center / contain no-repeat;
 }
 
 .nav-links {
